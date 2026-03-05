@@ -296,6 +296,28 @@ if [[ $FIRMWARE_TAG == *"EMMC"* ]]; then
     install -Dm755 "${GITHUB_WORKSPACE}/scripts/99_nginx_setup.sh" "package/base-files/files/etc/uci-defaults/99_nginx_setup"
 fi
 
+
+# =========================================================
+# 修复 GCC 14 编译 mbedtls 报错的终极补丁
+# 原理：强制关闭会导致报错的 ARM 汇编优化指令
+# =========================================================
+
+echo "开始执行 mbedtls 修复补丁..."
+
+# 1. 找到 mbedtls 的 Makefile
+# 2. 在 CFLAGS 参数里强行加入 -fno-builtin-memset
+#    这会让编译器不做内联优化，从而绕过 "inlining failed" 错误
+find package/ -name "Makefile" | xargs grep -l "mbedtls" | xargs sed -i 's/$(TARGET_CFLAGS)/$(TARGET_CFLAGS) -fno-builtin-memset/g'
+
+# 3. 同时也尝试关闭 ARMv8 的硬件加速配置（双重保险）
+find package/ -name "Makefile" | xargs grep -l "mbedtls" | xargs sed -i 's/CONFIG_MBEDTLS_ARMV8CE_AES_C=y/CONFIG_MBEDTLS_ARMV8CE_AES_C=n/g'
+find package/ -name "Makefile" | xargs grep -l "mbedtls" | xargs sed -i 's/CONFIG_MBEDTLS_ARMV8CE_SHA256_C=y/CONFIG_MBEDTLS_ARMV8CE_SHA256_C=n/g'
+
+# 4. 顺便把 uhttpd 的依赖改到 openssl (这一步是优化，不是必须，但推荐)
+sed -i 's/libustream-mbedtls/libustream-openssl/g' package/network/services/uhttpd/Makefile
+
+echo "mbedtls 修复完成！"
+
 #update golang
 GOLANG_REPO="https://github.com/sbwml/packages_lang_golang"
 GOLANG_BRANCH="24.x"
