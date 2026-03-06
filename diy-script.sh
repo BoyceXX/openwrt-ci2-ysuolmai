@@ -66,7 +66,7 @@ UPDATE_PACKAGE() {
 UPDATE_PACKAGE "luci-app-poweroff" "esirplayground/luci-app-poweroff" "master"
 UPDATE_PACKAGE "luci-app-tailscale" "asvow/luci-app-tailscale" "main"
 UPDATE_PACKAGE "openwrt-gecoosac" "lwb1978/openwrt-gecoosac" "main"
-UPDATE_PACKAGE "luci-app-ddns-go" "sirpdboy/luci-app-ddns-go" "main"
+#UPDATE_PACKAGE "luci-app-ddns-go" "sirpdboy/luci-app-ddns-go" "main"
 UPDATE_PACKAGE "luci-app-openlist2" "sbwml/luci-app-openlist2" "main"
 UPDATE_PACKAGE "luci-app-netspeedtest" "https://github.com/sbwml/openwrt_pkgs.git" "main" "pkg"
 UPDATE_PACKAGE "speedtest-cli" "https://github.com/sbwml/openwrt_pkgs.git" "main" "pkg"
@@ -74,6 +74,7 @@ UPDATE_PACKAGE "luci-app-adguardhome" "https://github.com/ysuolmai/luci-app-adgu
 UPDATE_PACKAGE "openwrt-podman" "https://github.com/breeze303/openwrt-podman" "main"
 UPDATE_PACKAGE "luci-app-quickfile" "https://github.com/sbwml/luci-app-quickfile" "main"
 UPDATE_PACKAGE "frp" "https://github.com/ysuolmai/openwrt-frp.git" "main"
+UPDATE_PACKAGE "mihomo luci-app-mihomo" "kenzok8/small-package" "main" "pkg"
 
 # Small Package
 UPDATE_PACKAGE "xray-core xray-plugin dns2tcp dns2socks haproxy hysteria \
@@ -122,8 +123,8 @@ done
 provided_config_lines=(
     "CONFIG_PACKAGE_luci-app-zerotier=y"
     "CONFIG_PACKAGE_luci-i18n-zerotier-zh-cn=y"
-    "CONFIG_PACKAGE_luci-app-adguardhome=y"
-    "CONFIG_PACKAGE_luci-i18n-adguardhome-zh-cn=y"
+    "CONFIG_PACKAGE_luci-app-adguardhome=n"
+    "CONFIG_PACKAGE_luci-i18n-adguardhome-zh-cn=n"
     "CONFIG_PACKAGE_luci-app-poweroff=y"
     "CONFIG_PACKAGE_luci-i18n-poweroff-zh-cn=y"
     "CONFIG_PACKAGE_cpufreq=y"
@@ -140,7 +141,7 @@ provided_config_lines=(
     "CONFIG_PACKAGE_nano=y"
     "CONFIG_BUSYBOX_CONFIG_LSUSB=n"
     "CONFIG_PACKAGE_luci-app-netspeedtest=y"
-    "CONFIG_PACKAGE_luci-app-vlmcsd=y"
+    "CONFIG_PACKAGE_luci-app-vlmcsd=n"
     "CONFIG_COREMARK_OPTIMIZE_O3=y"
     "CONFIG_COREMARK_ENABLE_MULTITHREADING=y"
     "CONFIG_COREMARK_NUMBER_OF_THREADS=6"
@@ -151,12 +152,17 @@ provided_config_lines=(
     "CONFIG_PACKAGE_opkg=y"   
     "CONFIG_USE_APK=n"
     "CONFIG_PACKAGE_luci-app-tailscale=y"
-    "CONFIG_PACKAGE_luci-app-gecoosac=y"
+    "CONFIG_PACKAGE_luci-app-gecoosac=n"
     # 强制 OpenSSL 配置，避开 mbedtls
     "CONFIG_PACKAGE_libopenssl=y"
     "CONFIG_PACKAGE_libopenssl-conf=y"
     "CONFIG_PACKAGE_openssl-util=y"
     "CONFIG_PACKAGE_libustream-openssl=y"
+
+	#Mihomo
+	"CONFIG_PACKAGE_mihomo=y"
+    "CONFIG_PACKAGE_luci-app-mihomo=y"
+    "CONFIG_PACKAGE_luci-i18n-mihomo-zh-cn=y"
 )
 
 # 4.3 差异化配置：NOWIFI 版 (核心修复逻辑)
