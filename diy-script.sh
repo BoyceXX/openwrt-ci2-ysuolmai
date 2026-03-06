@@ -7,7 +7,7 @@
 # [修复 ddns-go 报错] 升级 Golang 到 1.24/1.25+ 以支持最新插件
 echo "Updating Golang..."
 GOLANG_REPO="https://github.com/sbwml/packages_lang_golang"
-GOLANG_BRANCH="24.x"
+GOLANG_BRANCH="25.x"
 if [[ -d ./feeds/packages/lang/golang ]]; then
 	rm -rf ./feeds/packages/lang/golang
 	git clone $GOLANG_REPO -b $GOLANG_BRANCH ./feeds/packages/lang/golang
@@ -64,7 +64,7 @@ UPDATE_PACKAGE() {
 # 3. 下载/更新软件包
 # ==============================================================================
 UPDATE_PACKAGE "luci-app-poweroff" "esirplayground/luci-app-poweroff" "master"
-UPDATE_PACKAGE "luci-app-tailscale" "asvow/luci-app-tailscale" "main"
+#UPDATE_PACKAGE "luci-app-tailscale" "asvow/luci-app-tailscale" "main"
 UPDATE_PACKAGE "openwrt-gecoosac" "lwb1978/openwrt-gecoosac" "main"
 #UPDATE_PACKAGE "luci-app-ddns-go" "sirpdboy/luci-app-ddns-go" "main"
 UPDATE_PACKAGE "luci-app-openlist2" "sbwml/luci-app-openlist2" "main"
@@ -151,7 +151,7 @@ provided_config_lines=(
     "CONFIG_OPKG_USE_CURL=y"
     "CONFIG_PACKAGE_opkg=y"   
     "CONFIG_USE_APK=n"
-    "CONFIG_PACKAGE_luci-app-tailscale=y"
+    "CONFIG_PACKAGE_luci-app-tailscale=n"
     "CONFIG_PACKAGE_luci-app-gecoosac=n"
     # 强制 OpenSSL 配置，避开 mbedtls
     "CONFIG_PACKAGE_libopenssl=y"
