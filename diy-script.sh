@@ -177,18 +177,44 @@ if [[ $FIRMWARE_TAG == *"NOWIFI"* ]]; then
         sed -i 's/\s*kmod-[^ ]*usb[^ ]*\s*\\\?//g' ./target/linux/qualcommax/Makefile
         sed -i 's/\s*kmod-[^ ]*ath11k[^ ]*\s*\\\?//g' ./target/linux/qualcommax/Makefile
     fi
-    
-    # 【重点】虽然是 NOWIFI，但必须开启 11AX 和 hostapd 编译支持，否则报错
-    # 但是我们通过 kmod-ath11k=n 来确保不生成驱动
+
+	# NOWIFI：定点清理掉 .config 里已存在的启用项（只删 CONFIG_*=y/m，不会删 '# CONFIG_... is not set'）
+	sed -i -E '/^CONFIG_(DEFAULT_)?PACKAGE_(wpad|hostapd-common|wpa-supplicant|wifi-scripts|wireless-regdb|iw)=/d' .config
+	sed -i -E '/^CONFIG_WPA_ENABLE_IEEE80211(A|B|H|X|BE|AC).*=/d' .config
+
+    # 【NOWIFI：完全不需要 WiFi】禁用 userspace WiFi 组件，避免编译 hostapd/wpad
     provided_config_lines+=(
-        "CONFIG_DRIVER_11AX_SUPPORT=y"     # 必须开启，为了 hostapd 编译通过
-        "CONFIG_DRIVER_11AC_SUPPORT=y"
-        "CONFIG_PACKAGE_hostapd-common=y"  # 必须保留
-        "CONFIG_PACKAGE_wpad-openssl=y"    # 必须用 openssl 版
-        "CONFIG_PACKAGE_kmod-ath11k=n"     # 不编译内核驱动
-        "CONFIG_PACKAGE_kmod-ath11k-ahb=n"
-        "CONFIG_PACKAGE_kmod-ath11k-pci=n"
-        "CONFIG_PACKAGE_ath11k-firmware-ipq6018=n"
+        "# CONFIG_DRIVER_11AX_SUPPORT is not set"
+        "# CONFIG_DRIVER_11AC_SUPPORT is not set"
+
+        "# CONFIG_PACKAGE_hostapd-common is not set"
+        "# CONFIG_PACKAGE_wpa-supplicant is not set"
+
+        "# CONFIG_PACKAGE_wpad-basic-mbedtls is not set"
+        "# CONFIG_PACKAGE_wpad-basic-openssl is not set"
+        "# CONFIG_PACKAGE_wpad-mbedtls is not set"
+        "# CONFIG_PACKAGE_wpad-openssl is not set"
+        "# CONFIG_PACKAGE_wpad-full-openssl is not set"
+
+        "# CONFIG_PACKAGE_wifi-scripts is not set"
+        "# CONFIG_PACKAGE_wireless-regdb is not set"
+        "# CONFIG_PACKAGE_iw is not set"
+
+        "# CONFIG_DEFAULT_wpad-basic-mbedtls is not set"
+        "# CONFIG_DEFAULT_wpad-basic-openssl is not set"
+        "# CONFIG_DEFAULT_wpad-mbedtls is not set"
+        "# CONFIG_DEFAULT_wpad-openssl is not set"
+        "# CONFIG_DEFAULT_wpad-full-openssl is not set"
+        "# CONFIG_DEFAULT_hostapd-common is not set"
+        "# CONFIG_DEFAULT_wifi-scripts is not set"
+
+        "# CONFIG_PACKAGE_kmod-ath11k is not set"
+        "# CONFIG_PACKAGE_kmod-ath11k-ahb is not set"
+        "# CONFIG_PACKAGE_kmod-ath11k-pci is not set"
+        "# CONFIG_PACKAGE_kmod-cfg80211 is not set"
+        "# CONFIG_PACKAGE_kmod-mac80211 is not set"
+        "# CONFIG_PACKAGE_ath11k-firmware-ipq6018 is not set"
+        "# CONFIG_PACKAGE_ath11k-firmware-qcn9074 is not set"
     )
     echo "qualcommax set up nowifi successfully!"
 
